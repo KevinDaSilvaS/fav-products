@@ -3,8 +3,10 @@ import { IController } from "./IController.ts";
 
 export class ProductsController implements IController {
   dbConn: string;
+  cache: string;
   constructor() {
     this.dbConn = "";
+    this.cache = "";
   }
 
   public getAll(_ctx: Ctx) {
@@ -12,7 +14,7 @@ export class ProductsController implements IController {
   }
 
   public get(ctx: Ctx) {
-    console.log(ctx.request.url, ctx.params);
+    console.log(ctx.params);
     return { code: 200, data: { oi: "ola da camada de produto" } };
   }
 
