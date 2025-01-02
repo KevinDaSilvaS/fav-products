@@ -1,13 +1,15 @@
 import { Router } from "jsr:@oak/oak/router";
 import { ClientsController } from "../controllers/clients.ts";
 import { ProductsController } from "../controllers/products.ts";
+import { AuthController } from "../controllers/auth.ts";
 
 const router = new Router();
 
 const clients = { path: "/clients", controller: ClientsController };
 const products = { path: "/:clientId/products", controller: ProductsController };
+const auth = { path: "/auth", controller: AuthController };
 
-const routes = [clients, products];
+const routes = [clients, products, auth];
 
 export function getRouter() {
   for (const route of routes) {
