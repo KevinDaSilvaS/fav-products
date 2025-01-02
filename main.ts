@@ -4,7 +4,9 @@ import { auth } from "./middlewares/auth.ts"
 
 const router = getRouter();
 const app = new Application();
-app.use(auth);
+
+const authMiddleware = auth({}, {})
+app.use(authMiddleware);
 app.use(router.routes());
 app.use(router.allowedMethods());
 
