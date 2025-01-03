@@ -1,4 +1,5 @@
 import { Ctx } from "../dtos/ctx.ts";
+import { AuthBody } from "../dtos/requests/auth.ts";
 import { AuthService } from "../services/auth.ts";
 import { IController } from "./IController.ts";
 
@@ -8,24 +9,26 @@ export class AuthController implements IController {
     this.service = new AuthService(cache);
   }
 
-  public async getAll(_ctx: Ctx) {
-    return { code: 404, data: { error: "Method not implemented" } };
+  public async get(_ctx: Ctx) {
+    return { code: 405, data: { error: "Method not allowed" } };
   }
 
-  public async get(ctx: Ctx) {
-
-    return { code: 200, data: { error: "Method not implemented" } };
+  public async getAll(ctx: Ctx) {
+    const sessionToken = ctx.request.headers.get("SESSION_TOKEN") ?? "";
+    return await this.service.isLoggedIn(sessionToken);
   }
 
-  public async save(_ctx: Ctx) {
-    return { code: 200, data: { oi: "ola da camada de produto" } };
+  public async save(ctx: Ctx) {
+    const body: AuthBody = await ctx.request.body.json()
+    return await this.service.login(body.name)
   }
 
   public async update(_ctx: Ctx) {
-    return { code: 404, data: { error: "Method not implemented" } };
+    return { code: 405, data: { error: "Method not allowed" } };
   }
 
-  public async delete(_ctx: Ctx) {
-    return { code: 200, data: { error: "Method not implemented" } };
+  public async delete(ctx: Ctx) {
+    const sessionToken = ctx.request.headers.get("SESSION_TOKEN") ?? "";
+    return await this.service.logout(sessionToken);
   }
 }
