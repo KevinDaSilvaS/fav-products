@@ -4,7 +4,7 @@ services:
     mongo:
       image: mongo
       environment: 
-        MONGO_INITDB_DATABASE: inspections
+        MONGO_INITDB_DATABASE: fav
         MONGO_INITDB_ROOT_USERNAME: user
         MONGO_INITDB_ROOT_PASSWORD: 123
       ports: 
