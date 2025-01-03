@@ -5,7 +5,6 @@ import { auth } from "./middlewares/auth.ts";
 import { connectDb } from "./repositories/start_db.ts";
 
 const db = await connectDb();
-console.log(db)
 const redis = await connect({
   hostname: "127.0.0.1",
   port: 6379,
