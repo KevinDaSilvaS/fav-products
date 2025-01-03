@@ -14,7 +14,7 @@ const routes = [clients, products, auth];
 
 export function getRouter(params: RouterParams) {
   for (const route of routes) {
-    const controller = new route.controller(params.cache);
+    const controller = new route.controller(params.cache, params.db);
 
     router.get(route.path + "/:path_id", async (ctx) => {
       const { code, data } = await controller.get(ctx);

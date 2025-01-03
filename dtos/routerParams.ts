@@ -1,3 +1,6 @@
+import { Database } from "@db/mongo";
+
 export interface RouterParams {
-    cache: Cache
+    cache: Cache,
+    db: Database
 }

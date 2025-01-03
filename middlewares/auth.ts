@@ -1,15 +1,19 @@
 import { Middleware, Next } from "@oak/oak/middleware";
 import { AuthService } from "../services/auth.ts";
 import { Context } from "@oak/oak/context";
+import { Database } from "@db/mongo";
 
 const bypassPaths: Record<string, Record<string, boolean>> = {
   "/auth": {
     "POST": true
+  },
+  "/clients": {
+    "POST": true
   }
 } 
 
-export const auth = (cache: Cache): Middleware => {
-  const authService = new AuthService(cache);
+export const auth = (cache: Cache, db: Database): Middleware => {
+  const authService = new AuthService(cache, db);
   // deno-lint-ignore no-explicit-any
   return async (ctx: Context<Record<string, any>, Record<string, any>>, next: Next) => {
     const path = ctx.request.url.pathname

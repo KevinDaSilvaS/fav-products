@@ -1,3 +1,4 @@
+import { Database } from "@db/mongo";
 import { Ctx } from "../dtos/ctx.ts";
 import { AuthBody } from "../dtos/requests/auth.ts";
 import { AuthService } from "../services/auth.ts";
@@ -5,8 +6,9 @@ import { IController } from "./IController.ts";
 
 export class AuthController implements IController {
   private service: AuthService;
-  constructor(cache: Cache) {
-    this.service = new AuthService(cache);
+  
+  constructor(cache: Cache, db: Database) {
+    this.service = new AuthService(cache, db);
   }
 
   public async get(_ctx: Ctx) {
