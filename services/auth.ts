@@ -1,13 +1,15 @@
 export class AuthService {
-  private cacheConn: Record<string, boolean> = {
-    "1": true,
-  };
-  private dbConn = {};
-  constructor() {
+  private cache: Cache;
+  constructor(cache: Cache) {
+    this.cache = cache
   }
 
-  public isLoggedIn(sessionId: string) {
-    if (this.cacheConn[sessionId]) {
+  public async isLoggedIn(sessionId: string) {
+    const ok = await this.cache.set("1", true, { ex: 30 });
+    console.log(ok)
+    const v = await this.cache.get(sessionId)
+    console.log(v)
+    if (v) {
       return { code: 204, data: {} };
     }
 
@@ -15,12 +17,12 @@ export class AuthService {
   }
 
   public login(_email: string) {
-    this.cacheConn["12345"] = true;
+    this.cache["12345"] = true;
     return { code: 201, data: { sessionId: "12345" } };
   }
 
   public logout(sessionId: string) {
-    delete this.cacheConn[sessionId];
+    delete this.cache[sessionId];
     return { code: 204, data: {} };
   }
 }

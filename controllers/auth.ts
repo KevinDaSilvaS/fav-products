@@ -1,12 +1,11 @@
 import { Ctx } from "../dtos/ctx.ts";
+import { AuthService } from "../services/auth.ts";
 import { IController } from "./IController.ts";
 
 export class AuthController implements IController {
-  dbConn: string;
-  cache: string;
-  constructor() {
-    this.dbConn = "";
-    this.cache = "";
+  private service: AuthService;
+  constructor(cache: Cache) {
+    this.service = new AuthService(cache);
   }
 
   public getAll(_ctx: Ctx) {

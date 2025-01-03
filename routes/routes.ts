@@ -2,6 +2,7 @@ import { Router } from "jsr:@oak/oak/router";
 import { ClientsController } from "../controllers/clients.ts";
 import { ProductsController } from "../controllers/products.ts";
 import { AuthController } from "../controllers/auth.ts";
+import { RouterParams } from "../dtos/routerParams.ts";
 
 const router = new Router();
 
@@ -11,9 +12,9 @@ const auth = { path: "/auth", controller: AuthController };
 
 const routes = [clients, products, auth];
 
-export function getRouter() {
+export function getRouter(params: RouterParams) {
   for (const route of routes) {
-    const controller = new route.controller();
+    const controller = new route.controller(params.cache);
 
     router.get(route.path + "/:path_id", (ctx) => {
       const { code, data } = controller.get(ctx);
