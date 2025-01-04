@@ -37,14 +37,14 @@ export function getRouter(params: RouterParams) {
       ctx.response.body = data;
     });
 
-    router.patch(route.path, async (ctx) => {
+    router.patch(route.path + "/:path_id", async (ctx) => {
       const { code, data } = await controller.update(ctx);
       ctx.response.headers.append("Content-Type", "application/json");
       ctx.response.status = code;
       ctx.response.body = data;
     });
 
-    router.delete(route.path, async (ctx) => {
+    router.delete(route.path + "/:path_id", async (ctx) => {
       const { code, data } = await controller.delete(ctx);
       ctx.response.headers.append("Content-Type", "application/json");
       ctx.response.status = code;

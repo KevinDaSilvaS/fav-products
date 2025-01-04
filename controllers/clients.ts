@@ -1,28 +1,55 @@
+import { Database } from "@db/mongo";
 import { Ctx } from "../dtos/ctx.ts";
+import { ClientService } from "../services/clients.ts";
 import { IController } from "./IController.ts";
+import { ClientBody, UpdateClientBody } from "../dtos/requests/client.ts";
+import { AuthService } from "../services/auth.ts";
 
 export class ClientsController implements IController {
-  constructor() {
+  private service: ClientService;
+  private authService: AuthService;
+
+  constructor(cache: Cache, db: Database) {
+    this.service = new ClientService(db);
+    this.authService = new AuthService(cache, db);
+  }
+
+  private async canAccessResource(sessionToken: string, userId: string): Promise<boolean> {
+    const { data } = await this.authService.isLoggedIn(sessionToken);
+    return userId == data.userId;
   }
 
   public async getAll(_ctx: Ctx) {
-    return { code: 200, data: { oi: "ola" } };
+    return { code: 405, data: { error: "Method not allowed" } };
   }
 
   public async get(ctx: Ctx) {
-    console.log(ctx.params);
-    return { code: 200, data: { oi: "ola" } };
+    const sessionToken = ctx.request.headers.get("SESSION_TOKEN") ?? "";
+    const userId = ctx.params.path_id;
+    if(!await this.canAccessResource(sessionToken, userId))
+      return { code: 403, data: { error: "User dont have enough permission" } };
+    return await this.service.getUser(ctx.params.path_id);
   }
 
-  public async save(_ctx: Ctx) {
-    return { code: 200, data: { oi: "ola" } };
+  public async save(ctx: Ctx) {
+    const body: ClientBody = await ctx.request.body.json()
+    return await this.service.createUser(body);
   }
 
-  public async update(_ctx: Ctx) {
-    return { code: 200, data: { oi: "ola" } };
+  public async update(ctx: Ctx) {
+    const sessionToken = ctx.request.headers.get("SESSION_TOKEN") ?? "";
+    const userId = ctx.params.path_id;
+    const body: UpdateClientBody = await ctx.request.body.json()
+    if(!await this.canAccessResource(sessionToken, userId))
+      return { code: 403, data: { error: "User dont have enough permission" } };
+    return await this.service.updateUser(userId, body.name);
   }
 
-  public async delete(_ctx: Ctx) {
-    return { code: 200, data: { oi: "ola" } };
+  public async delete(ctx: Ctx) {
+    const sessionToken = ctx.request.headers.get("SESSION_TOKEN") ?? "";
+    const userId = ctx.params.path_id;
+    if(!await this.canAccessResource(sessionToken, userId))
+      return { code: 403, data: { error: "User dont have enough permission" } };
+    return await this.service.deleteUser(userId);
   }
 }

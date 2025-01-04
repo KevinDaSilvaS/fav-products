@@ -8,6 +8,5 @@ export interface ClientSchema {
 }
 
 export function clients(db: Database): Collection<ClientSchema> {
-    console.log(db)
     return db.collection<ClientSchema>("clients");
 }
