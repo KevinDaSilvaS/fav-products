@@ -1,7 +1,11 @@
 import { Collection, Database, ObjectId } from "@db/mongo";
 
 export interface Product {
-    productId: string
+    productId: string,
+    title: string,
+    image: string,
+    price: number,
+    review?: number
 }
 
 export interface ClientSchema {
