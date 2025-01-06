@@ -2,6 +2,7 @@ import { NAMESPACE_DNS, v5 } from "@std/uuid";
 import { Collection, Database } from "@db/mongo";
 import { clients, ClientSchema } from "../repositories/clients/schema.ts";
 import { ApplicationErrors } from "../dtos/errors-enum.ts";
+import { Codes } from "../dtos/http-enum.ts";
 
 export class AuthService {
   private ttlInSeconds = 3600;
@@ -24,17 +25,20 @@ export class AuthService {
   public async isLoggedIn(sessionId: string) {
     const userId = await this.cache.get(sessionId);
     if (userId) {
-      return { code: 200, data: { userId } };
+      return { code: Codes.OK, data: { userId } };
     }
 
-    return { code: 401, data: { error: ApplicationErrors.NOT_LOGGED_IN } };
+    return {
+      code: Codes.NOT_AUTHORIZED,
+      data: { error: ApplicationErrors.NOT_LOGGED_IN },
+    };
   }
 
   public async login(email: string) {
     const user = await this.collection.findOne({ email }, { projection: {} });
     if (!user) {
       return {
-        code: 404,
+        code: Codes.NOT_FOUND,
         data: { error: ApplicationErrors.RESOURCE_NOT_FOUND },
       };
     }
@@ -49,13 +53,16 @@ export class AuthService {
     });
 
     if (ok == "OK") {
-      return { code: 201, data: { sessionToken } };
+      return { code: Codes.CREATED, data: { sessionToken } };
     }
-    return { code: 500, data: { error: ApplicationErrors.UNABLE_TO_EXECUTE_ACTION } };
+    return {
+      code: Codes.INTERNAL_SERVER_ERROR,
+      data: { error: ApplicationErrors.UNABLE_TO_EXECUTE_ACTION },
+    };
   }
 
   public async logout(sessionId: string) {
     await this.cache.del(sessionId);
-    return { code: 204, data: undefined };
+    return { code: Codes.NO_CONTENT, data: undefined };
   }
 }

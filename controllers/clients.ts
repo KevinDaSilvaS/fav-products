@@ -5,6 +5,7 @@ import { IController } from "./IController.ts";
 import { ClientBody, UpdateClientBody } from "../dtos/requests/client.ts";
 import { AuthService } from "../services/auth.ts";
 import { ApplicationErrors } from "../dtos/errors-enum.ts";
+import { Codes } from "../dtos/http-enum.ts";
 
 export class ClientsController implements IController {
   private service: ClientService;
@@ -22,7 +23,7 @@ export class ClientsController implements IController {
     );
     if (!userId) {
       return {
-        code: 403,
+        code: Codes.FORBIDDEN,
         data: { error: ApplicationErrors.ACTION_NOT_ALLOWED },
       };
     }
@@ -30,7 +31,7 @@ export class ClientsController implements IController {
   }
 
   public async get(_ctx: Ctx) {
-    return { code: 405, data: { error: ApplicationErrors.METHOD_NOT_ALLOWED } };
+    return { code: Codes.METHOD_NOT_ALLOWED, data: { error: ApplicationErrors.METHOD_NOT_ALLOWED } };
   }
 
   public async save(ctx: Ctx) {
@@ -44,7 +45,7 @@ export class ClientsController implements IController {
     const body: UpdateClientBody = await ctx.request.body.json();
     if (!await this.authService.canAccessResource(sessionToken, userId)) {
       return {
-        code: 403,
+        code: Codes.FORBIDDEN,
         data: { error: ApplicationErrors.ACTION_NOT_ALLOWED },
       };
     }
@@ -56,7 +57,7 @@ export class ClientsController implements IController {
     const userId = ctx.params.path_id;
     if (!await this.authService.canAccessResource(sessionToken, userId)) {
       return {
-        code: 403,
+        code: Codes.FORBIDDEN,
         data: { error: ApplicationErrors.ACTION_NOT_ALLOWED },
       };
     }

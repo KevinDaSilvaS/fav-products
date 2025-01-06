@@ -4,6 +4,7 @@ import { AuthService } from "../services/auth.ts";
 import { ProductService } from "../services/products.ts";
 import { IController } from "./IController.ts";
 import { ApplicationErrors } from "../dtos/errors-enum.ts";
+import { Codes } from "../dtos/http-enum.ts";
 
 export class ProductsController implements IController {
   private service: ProductService;
@@ -27,7 +28,7 @@ export class ProductsController implements IController {
     const userId = ctx.params.client_id;
     if (!await this.authService.canAccessResource(sessionToken, userId)) {
       return {
-        code: 403,
+        code: Codes.FORBIDDEN,
         data: { error: ApplicationErrors.ACTION_NOT_ALLOWED },
       };
     }
@@ -40,7 +41,7 @@ export class ProductsController implements IController {
     const productId = ctx.params.path_id;
     if (!await this.authService.canAccessResource(sessionToken, userId)) {
       return {
-        code: 403,
+        code: Codes.FORBIDDEN,
         data: { error: ApplicationErrors.ACTION_NOT_ALLOWED },
       };
     }
@@ -53,7 +54,7 @@ export class ProductsController implements IController {
     const productId = ctx.params.path_id;
     if (!await this.authService.canAccessResource(sessionToken, userId)) {
       return {
-        code: 403,
+        code: Codes.FORBIDDEN,
         data: { error: ApplicationErrors.ACTION_NOT_ALLOWED },
       };
     }
@@ -61,7 +62,10 @@ export class ProductsController implements IController {
   }
 
   public async save(_ctx: Ctx) {
-    return { code: 405, data: { error: ApplicationErrors.METHOD_NOT_ALLOWED } };
+    return {
+      code: Codes.METHOD_NOT_ALLOWED,
+      data: { error: ApplicationErrors.METHOD_NOT_ALLOWED },
+    };
   }
 
   public async delete(ctx: Ctx) {
@@ -70,7 +74,7 @@ export class ProductsController implements IController {
     const productId = ctx.params.path_id;
     if (!await this.authService.canAccessResource(sessionToken, userId)) {
       return {
-        code: 403,
+        code: Codes.FORBIDDEN,
         data: { error: ApplicationErrors.ACTION_NOT_ALLOWED },
       };
     }

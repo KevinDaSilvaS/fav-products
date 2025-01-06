@@ -2,6 +2,7 @@ import { Collection, Database, ObjectId } from "@db/mongo";
 import { clients, ClientSchema } from "../repositories/clients/schema.ts";
 import { ClientBody } from "../dtos/requests/client.ts";
 import { ApplicationErrors } from "../dtos/errors-enum.ts";
+import { Codes } from "../dtos/http-enum.ts";
 
 export class ClientService {
   private collection: Collection<ClientSchema>;
@@ -16,14 +17,17 @@ export class ClientService {
       const user = await this.collection.findOne({ _id: id });
       if (!user) {
         return {
-          code: 404,
+          code: Codes.NOT_FOUND,
           data: { error: ApplicationErrors.RESOURCE_NOT_FOUND },
         };
       }
 
-      return { code: 200, data: user };
+      return { code: Codes.OK, data: user };
     } catch (_error) {
-      return { code: 500, data: { error: "Unable to get user" } };
+      return {
+        code: Codes.INTERNAL_SERVER_ERROR,
+        data: { error: ApplicationErrors.UNABLE_TO_EXECUTE_ACTION },
+      };
     }
   }
 
@@ -34,7 +38,7 @@ export class ClientService {
 
     if (userInDb) {
       return {
-        code: 409,
+        code: Codes.CONFLICT,
         data: { error: ApplicationErrors.RESOURCE_ALREADY_EXISTS },
       };
     }
@@ -45,10 +49,13 @@ export class ClientService {
     } as ClientSchema);
 
     if (insertedUser) {
-      return { code: 201, data: { userId: insertedUser } };
+      return { code: Codes.CREATED, data: { userId: insertedUser } };
     }
 
-    return { code: 500, data: { error: ApplicationErrors.UNABLE_TO_EXECUTE_ACTION } };
+    return {
+      code: Codes.INTERNAL_SERVER_ERROR,
+      data: { error: ApplicationErrors.UNABLE_TO_EXECUTE_ACTION },
+    };
   }
 
   public async updateUser(userId: string, name: string) {
@@ -57,7 +64,7 @@ export class ClientService {
       { _id: id },
       { $set: { name } },
     );
-    return { code: 204, data: undefined };
+    return { code: Codes.NO_CONTENT, data: undefined };
   }
 
   public async deleteUser(userId: string) {
@@ -65,6 +72,6 @@ export class ClientService {
     await this.collection.deleteOne(
       { _id: id },
     );
-    return { code: 204, data: undefined };
+    return { code: Codes.NO_CONTENT, data: undefined };
   }
 }

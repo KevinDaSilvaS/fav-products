@@ -2,6 +2,7 @@ import { Collection, Database } from "@db/mongo";
 import { products, ProductSchema } from "../repositories/products/schema.ts";
 import { IntegrationProductsApi } from "../integrations/services/products-api.ts";
 import { ApplicationErrors } from "../dtos/errors-enum.ts";
+import { Codes } from "../dtos/http-enum.ts";
 
 export class ProductService {
   private collection: Collection<ProductSchema>;
@@ -20,7 +21,7 @@ export class ProductService {
       .limit(limit)
       .toArray();
 
-    return { code: 200, data: products };
+    return { code: Codes.OK, data: products };
   }
 
   public async getProduct(userId: string, productId: string) {
@@ -28,19 +29,19 @@ export class ProductService {
 
     if (!product) {
       return {
-        code: 404,
+        code: Codes.NOT_FOUND,
         data: { error: ApplicationErrors.RESOURCE_NOT_FOUND },
       };
     }
 
-    return { code: 200, data: product };
+    return { code: Codes.OK, data: product };
   }
 
   public async addProduct(userId: string, productId: string) {
     const { code } = await this.getProduct(userId, productId);
-    if (code == 200) {
+    if (code == Codes.OK) {
       return {
-        code: 409,
+        code: Codes.CONFLICT,
         data: { error: ApplicationErrors.RESOURCE_ALREADY_EXISTS },
       };
     }
@@ -48,7 +49,7 @@ export class ProductService {
     const product = await this.productApi.getOneProduct(productId);
     if (!product) {
       return {
-        code: 404,
+        code: Codes.NOT_FOUND,
         data: { error: ApplicationErrors.RESOURCE_NOT_FOUND },
       };
     }
@@ -61,13 +62,13 @@ export class ProductService {
       title: product.title,
       review: product.reviewScore,
     } as ProductSchema);
-    return { code: 204, data: undefined };
+    return { code: Codes.NO_CONTENT, data: undefined };
   }
 
   public async deleteProduct(productId: string) {
     await this.collection.deleteOne(
       { productId },
     );
-    return { code: 204, data: undefined };
+    return { code: Codes.NO_CONTENT, data: undefined };
   }
 }
