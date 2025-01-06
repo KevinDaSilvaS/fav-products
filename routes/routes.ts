@@ -7,7 +7,7 @@ import { RouterParams } from "../dtos/routerParams.ts";
 const router = new Router();
 
 const clients = { path: "/clients", controller: ClientsController };
-const products = { path: "/:clientId/products", controller: ProductsController };
+const products = { path: "/:client_id/products", controller: ProductsController };
 const auth = { path: "/auth", controller: AuthController };
 
 const routes = [clients, products, auth];
