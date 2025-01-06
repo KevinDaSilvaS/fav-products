@@ -14,21 +14,16 @@ export class ClientsController implements IController {
     this.authService = new AuthService(cache, db);
   }
 
-  private async canAccessResource(sessionToken: string, userId: string): Promise<boolean> {
-    const { data } = await this.authService.isLoggedIn(sessionToken);
-    return userId == data.userId;
-  }
-
-  public async getAll(_ctx: Ctx) {
-    return { code: 405, data: { error: "Method not allowed" } };
+  public async getAll(ctx: Ctx) {
+    const sessionToken = ctx.request.headers.get("SESSION_TOKEN") ?? "";
+    const { data: { userId } } = await this.authService.isLoggedIn(sessionToken);
+    if(!userId)
+      return { code: 403, data: { error: "User dont have enough permission" } };
+    return await this.service.getUser(userId);
   }
 
   public async get(ctx: Ctx) {
-    const sessionToken = ctx.request.headers.get("SESSION_TOKEN") ?? "";
-    const userId = ctx.params.path_id;
-    if(!await this.canAccessResource(sessionToken, userId))
-      return { code: 403, data: { error: "User dont have enough permission" } };
-    return await this.service.getUser(ctx.params.path_id);
+    return { code: 405, data: { error: "Method not allowed" } };
   }
 
   public async save(ctx: Ctx) {
@@ -40,7 +35,7 @@ export class ClientsController implements IController {
     const sessionToken = ctx.request.headers.get("SESSION_TOKEN") ?? "";
     const userId = ctx.params.path_id;
     const body: UpdateClientBody = await ctx.request.body.json()
-    if(!await this.canAccessResource(sessionToken, userId))
+    if(!await this.authService.canAccessResource(sessionToken, userId))
       return { code: 403, data: { error: "User dont have enough permission" } };
     return await this.service.updateUser(userId, body.name);
   }
@@ -48,7 +43,7 @@ export class ClientsController implements IController {
   public async delete(ctx: Ctx) {
     const sessionToken = ctx.request.headers.get("SESSION_TOKEN") ?? "";
     const userId = ctx.params.path_id;
-    if(!await this.canAccessResource(sessionToken, userId))
+    if(!await this.authService.canAccessResource(sessionToken, userId))
       return { code: 403, data: { error: "User dont have enough permission" } };
     return await this.service.deleteUser(userId);
   }
