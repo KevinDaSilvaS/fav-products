@@ -3,11 +3,12 @@ import { Application } from "jsr:@oak/oak/application";
 import { getRouter } from "./routes/routes.ts";
 import { auth } from "./middlewares/auth.ts";
 import { connectDb } from "./repositories/start_db.ts";
+import "jsr:@std/dotenv/load";
 
 const db = await connectDb();
 const redis = await connect({
-  hostname: "127.0.0.1",
-  port: 6379,
+  hostname: Deno.env.get("CACHE_HOST") ?? "",
+  port: Deno.env.get("CACHE_PORT") ?? 6379,
 });
 
 const cache = redis as unknown as Cache;

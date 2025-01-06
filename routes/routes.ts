@@ -19,35 +19,35 @@ export function getRouter(params: RouterParams) {
     router.get(route.path + "/:path_id", async (ctx) => {
       const { code, data } = await controller.get(ctx);
       ctx.response.headers.append("Content-Type", "application/json");
-      ctx.response.status = code;
+      ctx.response.status = code as number;
       ctx.response.body = data;
     });
 
     router.get(route.path, async (ctx) => {
       const { code, data } = await controller.getAll(ctx);
       ctx.response.headers.append("Content-Type", "application/json");
-      ctx.response.status = code;
+      ctx.response.status = code as number;
       ctx.response.body = data;
     });
 
     router.post(route.path, async (ctx) => {
       const { code, data } = await controller.save(ctx);
       ctx.response.headers.append("Content-Type", "application/json");
-      ctx.response.status = code;
+      ctx.response.status = code as number;
       ctx.response.body = data;
     });
 
     router.patch(route.path + "/:path_id", async (ctx) => {
       const { code, data } = await controller.update(ctx);
       ctx.response.headers.append("Content-Type", "application/json");
-      ctx.response.status = code;
+      ctx.response.status = code as number;
       ctx.response.body = data;
     });
 
     router.delete(route.path + "/:path_id", async (ctx) => {
       const { code, data } = await controller.delete(ctx);
       ctx.response.headers.append("Content-Type", "application/json");
-      ctx.response.status = code;
+      ctx.response.status = code as number;
       ctx.response.body = data;
     });
   }
