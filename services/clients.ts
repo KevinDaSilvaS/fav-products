@@ -12,7 +12,6 @@ export class ClientService {
   public async getUser(userId: string) {
     try {
       const id = new ObjectId(userId);
-      console.log(id)
       const user = await this.collection.findOne({ _id: id });
       if (!user) {
         return { code: 404, data: { error: "User not found" } };
@@ -30,14 +29,13 @@ export class ClientService {
     });
 
     if (userInDb) {
-      return { code: 400, data: { error: "User already in db" } };
+      return { code: 409, data: { error: "User already in db" } };
     }
 
     const insertedUser = await this.collection.insertOne({
       email: user.email,
-      name: user.name,
-      products: []
-    } as unknown as ClientSchema);
+      name: user.name
+    } as ClientSchema);
 
     if (insertedUser) {
       return { code: 201, data: { userId: insertedUser } };
