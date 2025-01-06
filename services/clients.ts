@@ -1,6 +1,7 @@
 import { Collection, Database, ObjectId } from "@db/mongo";
 import { clients, ClientSchema } from "../repositories/clients/schema.ts";
 import { ClientBody } from "../dtos/requests/client.ts";
+import { ApplicationErrors } from "../dtos/errors-enum.ts";
 
 export class ClientService {
   private collection: Collection<ClientSchema>;
@@ -14,7 +15,10 @@ export class ClientService {
       const id = new ObjectId(userId);
       const user = await this.collection.findOne({ _id: id });
       if (!user) {
-        return { code: 404, data: { error: "User not found" } };
+        return {
+          code: 404,
+          data: { error: ApplicationErrors.RESOURCE_NOT_FOUND },
+        };
       }
 
       return { code: 200, data: user };
@@ -29,19 +33,22 @@ export class ClientService {
     });
 
     if (userInDb) {
-      return { code: 409, data: { error: "User already in db" } };
+      return {
+        code: 409,
+        data: { error: ApplicationErrors.RESOURCE_ALREADY_EXISTS },
+      };
     }
 
     const insertedUser = await this.collection.insertOne({
       email: user.email,
-      name: user.name
+      name: user.name,
     } as ClientSchema);
 
     if (insertedUser) {
       return { code: 201, data: { userId: insertedUser } };
     }
 
-    return { code: 500, data: { error: "Unable to insert user" } };
+    return { code: 500, data: { error: ApplicationErrors.UNABLE_TO_EXECUTE_ACTION } };
   }
 
   public async updateUser(userId: string, name: string) {

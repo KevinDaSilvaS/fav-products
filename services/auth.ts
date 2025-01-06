@@ -1,6 +1,7 @@
 import { NAMESPACE_DNS, v5 } from "@std/uuid";
 import { Collection, Database } from "@db/mongo";
 import { clients, ClientSchema } from "../repositories/clients/schema.ts";
+import { ApplicationErrors } from "../dtos/errors-enum.ts";
 
 export class AuthService {
   private ttlInSeconds = 3600;
@@ -12,7 +13,10 @@ export class AuthService {
     this.collection = clients(db);
   }
 
-  public async canAccessResource(sessionToken: string, userId: string): Promise<boolean> {
+  public async canAccessResource(
+    sessionToken: string,
+    userId: string,
+  ): Promise<boolean> {
     const { data } = await this.isLoggedIn(sessionToken);
     return userId == data.userId;
   }
@@ -23,13 +27,16 @@ export class AuthService {
       return { code: 200, data: { userId } };
     }
 
-    return { code: 401, data: { error: "User not logged in" } };
+    return { code: 401, data: { error: ApplicationErrors.NOT_LOGGED_IN } };
   }
 
   public async login(email: string) {
     const user = await this.collection.findOne({ email }, { projection: {} });
     if (!user) {
-      return { code: 404, data: { error: "User not found" } };
+      return {
+        code: 404,
+        data: { error: ApplicationErrors.RESOURCE_NOT_FOUND },
+      };
     }
 
     const data = new TextEncoder().encode(
@@ -44,7 +51,7 @@ export class AuthService {
     if (ok == "OK") {
       return { code: 201, data: { sessionToken } };
     }
-    return { code: 500, data: { error: "Unable to login" } };
+    return { code: 500, data: { error: ApplicationErrors.UNABLE_TO_EXECUTE_ACTION } };
   }
 
   public async logout(sessionId: string) {

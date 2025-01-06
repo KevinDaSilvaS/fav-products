@@ -3,6 +3,7 @@ import { Ctx } from "../dtos/ctx.ts";
 import { AuthService } from "../services/auth.ts";
 import { ProductService } from "../services/products.ts";
 import { IController } from "./IController.ts";
+import { ApplicationErrors } from "../dtos/errors-enum.ts";
 
 export class ProductsController implements IController {
   private service: ProductService;
@@ -25,7 +26,10 @@ export class ProductsController implements IController {
     const sessionToken = ctx.request.headers.get("SESSION_TOKEN") ?? "";
     const userId = ctx.params.client_id;
     if (!await this.authService.canAccessResource(sessionToken, userId)) {
-      return { code: 403, data: { error: "User dont have enough permission" } };
+      return {
+        code: 403,
+        data: { error: ApplicationErrors.ACTION_NOT_ALLOWED },
+      };
     }
     return await this.service.getProducts(userId, page, limit);
   }
@@ -35,7 +39,10 @@ export class ProductsController implements IController {
     const userId = ctx.params.client_id;
     const productId = ctx.params.path_id;
     if (!await this.authService.canAccessResource(sessionToken, userId)) {
-      return { code: 403, data: { error: "User dont have enough permission" } };
+      return {
+        code: 403,
+        data: { error: ApplicationErrors.ACTION_NOT_ALLOWED },
+      };
     }
     return await this.service.getProduct(userId, productId);
   }
@@ -45,13 +52,16 @@ export class ProductsController implements IController {
     const userId = ctx.params.client_id;
     const productId = ctx.params.path_id;
     if (!await this.authService.canAccessResource(sessionToken, userId)) {
-      return { code: 403, data: { error: "User dont have enough permission" } };
+      return {
+        code: 403,
+        data: { error: ApplicationErrors.ACTION_NOT_ALLOWED },
+      };
     }
     return await this.service.addProduct(userId, productId);
   }
 
   public async save(_ctx: Ctx) {
-    return { code: 405, data: { error: "Method not allowed" } };
+    return { code: 405, data: { error: ApplicationErrors.METHOD_NOT_ALLOWED } };
   }
 
   public async delete(ctx: Ctx) {
@@ -59,7 +69,10 @@ export class ProductsController implements IController {
     const userId = ctx.params.client_id;
     const productId = ctx.params.path_id;
     if (!await this.authService.canAccessResource(sessionToken, userId)) {
-      return { code: 403, data: { error: "User dont have enough permission" } };
+      return {
+        code: 403,
+        data: { error: ApplicationErrors.ACTION_NOT_ALLOWED },
+      };
     }
     return await this.service.deleteProduct(productId);
   }

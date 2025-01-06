@@ -3,6 +3,7 @@ import { Ctx } from "../dtos/ctx.ts";
 import { AuthBody } from "../dtos/requests/auth.ts";
 import { AuthService } from "../services/auth.ts";
 import { IController } from "./IController.ts";
+import { ApplicationErrors } from "../dtos/errors-enum.ts";
 
 export class AuthController implements IController {
   private service: AuthService;
@@ -12,7 +13,7 @@ export class AuthController implements IController {
   }
 
   public async get(_ctx: Ctx) {
-    return { code: 405, data: { error: "Method not allowed" } };
+    return { code: 405, data: { error: ApplicationErrors.METHOD_NOT_ALLOWED } };
   }
 
   public async getAll(ctx: Ctx) {
@@ -26,7 +27,7 @@ export class AuthController implements IController {
   }
 
   public async update(_ctx: Ctx) {
-    return { code: 405, data: { error: "Method not allowed" } };
+    return { code: 405, data: { error: ApplicationErrors.METHOD_NOT_ALLOWED } };
   }
 
   public async delete(ctx: Ctx) {
