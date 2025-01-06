@@ -12,7 +12,6 @@ export interface ClientSchema {
     _id: ObjectId;
     name: string;
     email: string;
-    products: Product[];
 }
 
 export function clients(db: Database): Collection<ClientSchema> {
