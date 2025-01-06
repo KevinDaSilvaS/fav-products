@@ -12,6 +12,11 @@ export class AuthService {
     this.collection = clients(db);
   }
 
+  public async canAccessResource(sessionToken: string, userId: string): Promise<boolean> {
+    const { data } = await this.isLoggedIn(sessionToken);
+    return userId == data.userId;
+  }
+
   public async isLoggedIn(sessionId: string) {
     const userId = await this.cache.get(sessionId);
     if (userId) {

@@ -22,7 +22,7 @@ export class AuthController implements IController {
 
   public async save(ctx: Ctx) {
     const body: AuthBody = await ctx.request.body.json()
-    return await this.service.login(body.name)
+    return await this.service.login(body.email)
   }
 
   public async update(_ctx: Ctx) {
