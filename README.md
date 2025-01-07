@@ -7,6 +7,10 @@ Or with docker<br>
 `docker compose up -d --build` <br>
 
 ## Endpoints
+
+### Collection
+There's an insomnia collection by the name ./collection to import and help testing the api
+
 ### Users: `/clients`
 - POST(Creates a user) `/clients` <br> 
     Request body:<br>
