@@ -29,7 +29,7 @@ export const auth = (cache: Cache, db: Database): Middleware => {
     }
 
     ctx.response.headers.append("Content-Type", "application/json");
-    ctx.response.status = authResult.code;
+    ctx.response.status = authResult.code as number;
     ctx.response.body = authResult.data;
     return;
   };

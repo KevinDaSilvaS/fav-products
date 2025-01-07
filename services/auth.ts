@@ -23,6 +23,7 @@ export class AuthService {
   }
 
   public async isLoggedIn(sessionId: string) {
+    //@ts-ignore error intellisense redis lib
     const userId = await this.cache.get(sessionId);
     if (userId) {
       return { code: Codes.OK, data: { userId } };
@@ -48,6 +49,7 @@ export class AuthService {
     );
 
     const sessionToken = await v5.generate(NAMESPACE_DNS, data);
+    //@ts-ignore error intellisense redis lib
     const ok = await this.cache.set(sessionToken, user?._id, {
       ex: this.ttlInSeconds,
     });
@@ -62,6 +64,7 @@ export class AuthService {
   }
 
   public async logout(sessionId: string) {
+    //@ts-ignore error intellisense redis lib
     await this.cache.del(sessionId);
     return { code: Codes.NO_CONTENT, data: undefined };
   }
