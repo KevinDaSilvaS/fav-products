@@ -24,8 +24,7 @@ There's an insomnia collection by the name ./collection to import and help testi
     Request body: <br>
     ` {
         "name": "Kevin"
-    }
-`
+    }`
 
 - GET(Obtains logged user data) `/clients` 
 <br> 
