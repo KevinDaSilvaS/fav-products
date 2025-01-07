@@ -52,7 +52,6 @@ There's an insomnia collection by the name ./collection to import and help testi
         "email": "k@k.com"
     }
 `
-<br>
 
 - GET(Gets user id from SESSION_TOKEN header) `/auth` <br> 
 
