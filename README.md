@@ -21,8 +21,8 @@ There's an insomnia collection by the name ./collection to import and help testi
 `
 <br>
 - PATCH(Updates a user) `/clients/:user_id` <br> 
-    Request body:<br>
-    `{
+    Request body: <br>
+    ` {
         "name": "Kevin"
     }
 `
