@@ -1,6 +1,10 @@
 # Fav-products-api
 
 ## Running the app
+To run the app just run:<br>
+`podman compose up -d --build` <br>
+Or with docker<br>
+`docker compose up -d --build` <br>
 
 ## Endpoints
 ### Users: `/clients`
@@ -49,7 +53,7 @@
 
 - GET(Gets user id from SESSION_TOKEN header) `/auth` <br> 
 
-- DELETE(Logs out user) `/auth` <br> 
+- DELETE(Logs out user) `/auth/logout` <br> 
 <br>
 
 ### Notice
